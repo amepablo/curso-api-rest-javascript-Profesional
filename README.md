@@ -1,2 +1,2 @@
 # curso-api-rest-javascript-practico
-Curso práctico de consumo de API REST con javascript
+Curso Profesional de consumo de API REST con javascript
