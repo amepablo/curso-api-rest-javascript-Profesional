@@ -124,6 +124,7 @@ button {
 
 .movie-img {
   border-radius: 8px;
+  /* * Se le agrega un minHeight para solucionar el problema de lazy loading */
   min-height: 175px;
 }
 
