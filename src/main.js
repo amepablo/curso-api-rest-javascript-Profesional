@@ -21,13 +21,12 @@ const lazyLoader = new IntersectionObserver( (entries) => {
     });
 });
 
-function createMovies(movies, container, 
-    { lazyload = false, clean = true } = {}) {
+function createMovies(movies, container, { lazyload = false, clean = true } = {},) {
     
-    if (clean) {
-        container.innerHTML = '';
-        
-    }
+        if (clean) {
+            container.innerHTML = '';
+            
+        }
 
 
     movies.forEach(movie => {
@@ -134,31 +133,45 @@ async function getTrandingMovies() {
 
     createMovies(movies, genericSection, { lazyload: true, clean: true});
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerHTML = 'Cargar más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerHTML = 'Cargar más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 }
 
 // * Clase 10: Infinity scrolling
 
-let page = 1;
+
 
 async function getPaginatedTrendingMovies() {
-    page++;
-    const { data } = await api('trending/movie/day', {
-        params: {
-            page,
-        },
-    });
 
-    const movies = data.results;
-    createMovies(movies, genericSection, { lazyload: true, clean: false });
+    const { 
+        scrollTop, 
+        scrollHeight, 
+        clientHeight 
+    } = document.documentElement;
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerHTML = 'Cargar Más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+
+    if (scrollIsBottom) {
+        page++;
+        const { data } = await api('trending/movie/day', {
+            params: {
+                page,
+            },
+        });
+    
+        const movies = data.results;
+        createMovies(
+            movies, 
+            genericSection, 
+            { lazyload: true, clean: false });
+    }
+    
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerHTML = 'Cargar Más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 }
 
 async function getMovieById(id) {
