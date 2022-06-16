@@ -112,9 +112,44 @@ async function getMoviesByCategory(categoryId) {
         }
     });
     const movies = data.results;
+    maxPage = data.total_pages;
 
-    createMovies(movies,genericSection, true);
+    createMovies(movies,genericSection, { lazyload: true });
 }
+
+function getPaginatedMoviesByCategory(categoryId) {
+    return async function () {
+        
+    const { 
+        scrollTop, 
+        scrollHeight, 
+        clientHeight 
+    } = document.documentElement;
+
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    const pageIsNotMax = page < maxPage;
+
+    if (scrollIsBottom && pageIsNotMax) {
+        page++;
+        const { data } = await api('discover/movie', {
+            params: {
+                with_genres: categoryId,
+                page
+            }
+        });
+        const movies = data.results;
+
+    
+        createMovies(
+            movies, 
+            genericSection, 
+            { lazyload: true, clean: false });
+    }
+    }
+
+}
+
+
 
 async function getMoviesBySearch(query) {
     const { data } = await api('search/movie', {
@@ -123,8 +158,44 @@ async function getMoviesBySearch(query) {
         }
     });
     const movies = data.results;
+    maxPage = data.total_pages;
+    console.log(maxPage);
 
     createMovies(movies,genericSection);
+}
+
+// * Aplicando Closure
+function getPaginatedMoviesBySearch(query) {
+    return async function () {
+        
+    const { 
+        scrollTop, 
+        scrollHeight, 
+        clientHeight 
+    } = document.documentElement;
+
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    const pageIsNotMax = page < maxPage;
+
+    if (scrollIsBottom && pageIsNotMax) {
+        page++;
+        const { data } = await api('search/movie', {
+            params: {
+                query,
+                page,
+            }
+        });
+        const movies = data.results;
+        maxPage = data.total_pages;
+        console.log(maxPage);
+    
+        createMovies(
+            movies, 
+            genericSection, 
+            { lazyload: true, clean: false });
+    }
+    }
+
 }
 
 async function getTrandingMovies() {
