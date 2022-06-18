@@ -32,10 +32,7 @@ function createMovies(movies, container, { lazyload = false, clean = true } = {}
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container')
-        movieContainer.addEventListener('click', () => {
-            location.hash = '#movie=' + movie.id;
-        });
-
+        
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
@@ -43,7 +40,10 @@ function createMovies(movies, container, { lazyload = false, clean = true } = {}
             lazyload ? 'data-img': 'src', 
             'https://image.tmdb.org/t/p/w300' + movie.poster_path
             );
-
+        movieImg.addEventListener('click', () => {
+            location.hash = '#movie=' + movie.id;
+        });
+            
         // * Clase 8: Imágenes por defecto
         movieImg.addEventListener('error', () => {
             movieImg.setAttribute(
@@ -51,13 +51,21 @@ function createMovies(movies, container, { lazyload = false, clean = true } = {}
                 'https://static.platzi.com/static/images/error/img404.png',
                 );
         });
-            
+        
+        const movieBtn = document.createElement('button');
+        movieBtn.classList.add('movie-btn');
+        movieBtn.addEventListener('click', () => {
+            movieBtn.classList.add('movie-btn--liked');
+            // DEBERIAMOS AGREGAR LA PELICULA A LS
+        });
+
         if (lazyload) {
             lazyLoader.observe(movieImg);
             
         }
 
         movieContainer.appendChild(movieImg);
+        movieContainer.appendChild(movieBtn);
         container.appendChild(movieContainer);
 
     });
