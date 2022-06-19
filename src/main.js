@@ -26,6 +26,8 @@ function likedMoviesList() {
 function likeMovie(movie) {
     const likedMovies = likedMoviesList();
 
+    console.log(likedMovies);
+
     if (likedMovies[movie.id]) {
         likedMovies[movie.id] = undefined;
     } else {
@@ -81,8 +83,10 @@ function createMovies(movies, container, { lazyload = false, clean = true } = {}
         
         const movieBtn = document.createElement('button');
         movieBtn.classList.add('movie-btn');
+        // * Liked Button
+        likedMoviesList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
         movieBtn.addEventListener('click', () => {
-            movieBtn.classList.add('movie-btn--liked');
+            movieBtn.classList.toggle('movie-btn--liked');
             likeMovie(movie);
         });
 
@@ -184,8 +188,6 @@ function getPaginatedMoviesByCategory(categoryId) {
 
 }
 
-
-
 async function getMoviesBySearch(query) {
     const { data } = await api('search/movie', {
         params: {
@@ -198,6 +200,7 @@ async function getMoviesBySearch(query) {
 
     createMovies(movies,genericSection);
 }
+
 
 // * Aplicando Closure
 function getPaginatedMoviesBySearch(query) {
@@ -246,10 +249,8 @@ async function getTrandingMovies() {
     // genericSection.appendChild(btnLoadMore);
 }
 
+
 // * Clase 10: Infinity scrolling
-
-
-
 async function getPaginatedTrendingMovies() {
 
     const { 
@@ -310,4 +311,14 @@ async function getRelatedMoviesId(id) {
     const relatedMovies = data.results;
 
     createMovies(relatedMovies, relatedMoviesContainer)
+}
+
+function getLikedMovies() {
+    const likedMovies = likedMoviesList();
+    const moviesArray = Object.values(likedMovies);
+    
+    createMovies(moviesArray, likedMoviesListArticle, { lazyload: true, clean: true });
+
+    console.log(likedMovies);
+
 }
